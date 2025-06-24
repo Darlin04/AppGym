@@ -1,7 +1,8 @@
-
+// lib/features/dashboard/dashboard_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:gym_app/common/theme/app_theme.dart';
+import 'package:gym_app/features/onboarding/questionnaire_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -22,31 +23,39 @@ class DashboardScreen extends StatelessWidget {
                 const SizedBox(height: 30),
                 
                 _buildActionCard(
+                  context: context,
                   icon: Icons.calendar_today_outlined,
                   title: 'Crear Plan de Entrenamiento',
-                  subtitle: 'Entrenador',
+                  subtitle: 'Personaliza tu rutina',
                   color: AppColors.primaryPurple,
                   iconColor: AppColors.primaryPurpleDark,
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const QuestionnaireScreen()),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 
                 _buildActionCard(
+                  context: context,
                   icon: Icons.casino_outlined,
-                  title: 'Rutina Aleatorio',
-                  subtitle: 'Ocasionalmente',
+                  title: 'Rutina Aleatoria',
+                  subtitle: 'Una opción rápida',
                   color: AppColors.secondaryGreen,
                   iconColor: Colors.green.shade800,
-                  onTap: () {},
+                  onTap: () {
+                    // Navegación a la pantalla de selección de rutina aleatoria
+                  },
                 ),
                 const SizedBox(height: 30),
                 
                 Text('Mi Progreso', style: textTheme.titleLarge),
                 const SizedBox(height: 16),
-                _buildProgressCard(),
+                _buildProgressCard(context),
                 
                 const SizedBox(height: 16),
-                _buildBottomCards(),
+                _buildBottomCards(context),
               ],
             ),
           ),
@@ -56,6 +65,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   Widget _buildActionCard({
+    required BuildContext context,
     required IconData icon,
     required String title,
     required String subtitle,
@@ -106,7 +116,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProgressCard() {
+  Widget _buildProgressCard(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -126,7 +136,7 @@ class DashboardScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Mi Progreso', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text('Mi Progreso', style: Theme.of(context).textTheme.titleLarge),
               const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textSecondary),
             ],
           ),
@@ -164,18 +174,19 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomCards() {
+  Widget _buildBottomCards(BuildContext context) {
     return Row(
       children: [
         Expanded(
           child: _buildInfoCard(
+            context: context,
             title: 'Librería de\nEjercicios',
-            content: const Row(
+            content: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Icon(Icons.fitness_center, color: AppColors.textSecondary),
-                Icon(Icons.directions_run, color: AppColors.textSecondary),
-                Icon(Icons.self_improvement, color: AppColors.textSecondary),
+                Icon(Icons.fitness_center, color: AppColors.textSecondary, size: 28),
+                Icon(Icons.directions_run, color: AppColors.textSecondary, size: 28),
+                Icon(Icons.self_improvement, color: AppColors.textSecondary, size: 28),
               ],
             ),
           ),
@@ -183,8 +194,9 @@ class DashboardScreen extends StatelessWidget {
         const SizedBox(width: 16),
         Expanded(
           child: _buildInfoCard(
+            context: context,
             title: 'Ajustes',
-            content: const Center(
+            content: Center(
               child: Icon(Icons.settings, size: 36, color: AppColors.textSecondary),
             ),
           ),
@@ -193,7 +205,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoCard({required String title, required Widget content}) {
+  Widget _buildInfoCard({required BuildContext context, required String title, required Widget content}) {
     return InkWell(
       onTap: () {},
       borderRadius: BorderRadius.circular(20),
@@ -214,7 +226,7 @@ class DashboardScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            Text(title, style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18)),
             const Spacer(),
             SizedBox(height: 40, child: content),
             const Spacer(),

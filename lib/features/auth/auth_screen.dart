@@ -1,3 +1,5 @@
+// lib/features/auth/auth_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_app/features/auth/auth_viewmodel.dart';
@@ -15,26 +17,16 @@ class _AuthScreenState extends State<AuthScreen> {
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
 
+  late AuthViewModel _authViewModel;
+
   void _authListener() {
     if (!mounted) return;
 
-    final authViewModel = context.read<AuthViewModel>();
-    
-    if (authViewModel.errorMessage != null) {
+    if (_authViewModel.errorMessage != null && _authViewModel.user == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            authViewModel.errorMessage!,
-            style: const TextStyle(fontSize: 16), 
-          ),
+          content: Text(_authViewModel.errorMessage!),
           backgroundColor: Colors.redAccent,
-        ),
-      );
-    } else if (authViewModel.user != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('¡Inicio de sesión exitoso!'),
-          backgroundColor: Colors.green,
         ),
       );
     }
@@ -43,14 +35,13 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthViewModel>().addListener(_authListener);
-    });
+    _authViewModel = context.read<AuthViewModel>();
+    _authViewModel.addListener(_authListener);
   }
 
   @override
   void dispose() {
-    context.read<AuthViewModel>().removeListener(_authListener);
+    _authViewModel.removeListener(_authListener);
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -80,9 +71,19 @@ class _AuthScreenState extends State<AuthScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 48),
-
                 Container(
-                  decoration: BoxDecoration( ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.08),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
@@ -93,9 +94,19 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 const SizedBox(height: 16.0),
-
                 Container(
-                  decoration: BoxDecoration( ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.08),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: TextField(
                     controller: _passwordController,
                     obscureText: !_isPasswordVisible,
@@ -108,21 +119,32 @@ class _AuthScreenState extends State<AuthScreen> {
                           color: Colors.grey,
                         ),
                         onPressed: () {
-                          setState(() { _isPasswordVisible = !_isPasswordVisible; });
+                          setState(() {
+                            _isPasswordVisible = !_isPasswordVisible;
+                          });
                         },
                       ),
                     ),
                   ),
                 ),
                 const SizedBox(height: 24.0),
-
                 Container(
-                  decoration: BoxDecoration( ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Theme.of(context).primaryColor.withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
                   child: ElevatedButton(
                     onPressed: () {
                       final email = _emailController.text.trim();
                       final password = _passwordController.text.trim();
-                      context.read<AuthViewModel>().signInWithEmail(email, password);
+                      _authViewModel.signInWithEmail(email, password);
                     },
                     child: Consumer<AuthViewModel>(
                       builder: (context, authViewModel, child) {
@@ -139,7 +161,6 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                
                 const Row(
                   children: [
                     Expanded(child: Divider()),
@@ -151,19 +172,28 @@ class _AuthScreenState extends State<AuthScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-
                 Container(
-                  decoration: BoxDecoration( ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.08),
+                        spreadRadius: 2,
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
                   child: OutlinedButton.icon(
                     icon: Image.asset('assets/images/google_logo.png', height: 20.0),
                     label: const Text('Continuar con Google'),
                     onPressed: () {
-                      context.read<AuthViewModel>().signInWithGoogle();
+                      _authViewModel.signInWithGoogle();
                     },
                   ),
                 ),
                 const SizedBox(height: 20),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
