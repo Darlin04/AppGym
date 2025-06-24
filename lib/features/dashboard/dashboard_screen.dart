@@ -1,4 +1,4 @@
-// lib/features/dashboard/dashboard_screen.dart
+
 
 import 'package:flutter/material.dart';
 import 'package:gym_app/common/theme/app_theme.dart';
