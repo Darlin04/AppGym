@@ -1,4 +1,4 @@
-// lib/main.dart
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,8 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:gym_app/firebase_options.dart';
 import 'package:gym_app/features/auth/auth_screen.dart';
 import 'package:gym_app/features/auth/auth_viewmodel.dart';
-import 'package:gym_app/features/dashboard/dashboard_screen.dart'; 
 import 'package:gym_app/common/theme/app_theme.dart';
+import 'package:gym_app/common/widgets/main_app_scaffold.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +53,7 @@ class AuthWrapper extends StatelessWidget {
     final authViewModel = context.watch<AuthViewModel>();
 
     if (authViewModel.user != null) {
-      return const DashboardScreen();
+      return const MainAppScaffold();
     } else {
       return const AuthScreen();
     }
