@@ -105,8 +105,8 @@ class _MainAppScaffoldState extends State<MainAppScaffold> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.logout, color: Colors.redAccent),
-            title: const Text('Cerrar Sesión', style: TextStyle(color: Colors.redAccent)),
+            leading: const Icon(Icons.logout),
+            title: const Text('Cerrar Sesión'),
             onTap: () {
               Navigator.pop(context);
               context.read<AuthViewModel>().signOut();
