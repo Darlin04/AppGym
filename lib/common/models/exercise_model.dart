@@ -1,10 +1,11 @@
+// lib/common/models/exercise_model.dart
+
 class ExerciseModel {
   final String id;
   final String name;
   final String description;
   final String imageUrl;
   final List<String> type;
-  //final String difficulty;
   final Map<String, double> logicValues;
 
   const ExerciseModel({
@@ -13,7 +14,6 @@ class ExerciseModel {
     required this.description,
     required this.imageUrl,
     required this.type,
-   // required this.difficulty,
     required this.logicValues,
   });
 
@@ -29,14 +29,19 @@ class ExerciseModel {
   }
 
   factory ExerciseModel.fromMap(Map<String, dynamic> map) {
+    final logicValuesData = map['logicValues'] as Map<String, dynamic>? ?? {};
+    
+    final logicValuesCasted = logicValuesData.map(
+      (key, value) => MapEntry(key, (value as num).toDouble()),
+    );
+
     return ExerciseModel(
       id: map['id'] as String,
       name: map['name'] as String,
       description: map['description'] as String,
       imageUrl: map['imageUrl'] as String,
       type: List<String>.from(map['type'] as List<dynamic>),
-     // difficulty: map['difficulty'] as String,
-      logicValues: Map<String, double>.from(map['logicValues'] as Map),
+      logicValues: logicValuesCasted,
     );
   }
 
@@ -46,7 +51,6 @@ class ExerciseModel {
     String? description,
     String? imageUrl,
     List<String>? type,
-    String? difficulty,
     Map<String, double>? logicValues,
   }) {
     return ExerciseModel(
