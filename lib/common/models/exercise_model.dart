@@ -1,4 +1,3 @@
-// lib/common/models/exercise_model.dart
 
 class ExerciseModel {
   final String id;
