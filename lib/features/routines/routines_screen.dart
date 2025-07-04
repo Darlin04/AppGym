@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class MyRoutinesScreen extends StatelessWidget {
-  const MyRoutinesScreen({super.key});
+class RoutinesScreen extends StatelessWidget {
+  const RoutinesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
