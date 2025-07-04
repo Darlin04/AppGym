@@ -53,7 +53,7 @@ class OnboardingViewModel extends ChangeNotifier {
     print('Altura: $height cm');
     print('Objetivo: $_selectedGoal');
 
-    // Aquí iría la llamada al servicio para guardar los datos en Firestore.
+    
   }
 
   @override
