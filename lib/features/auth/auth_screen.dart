@@ -194,8 +194,11 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                
+
+                Wrap(
+                  alignment: WrapAlignment.center,
+                 // crossAxisAlignment: WrapAlignment.center, 
                   children: [
                     Text("¿No tienes cuenta? ", style: textTheme.bodyMedium),
                     TextButton(
@@ -204,6 +207,11 @@ class _AuthScreenState extends State<AuthScreen> {
                           MaterialPageRoute(builder: (context) => const SignUpScreen()),
                         );
                       },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        minimumSize: Size.zero, 
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap, 
+                      ),
                       child: const Text('Regístrate aquí'),
                     ),
                   ],
