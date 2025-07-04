@@ -4,7 +4,7 @@ class ExerciseModel {
   final String description;
   final String imageUrl;
   final List<String> type;
-  final String difficulty;
+  //final String difficulty;
   final Map<String, double> logicValues;
 
   const ExerciseModel({
@@ -13,7 +13,7 @@ class ExerciseModel {
     required this.description,
     required this.imageUrl,
     required this.type,
-    required this.difficulty,
+   // required this.difficulty,
     required this.logicValues,
   });
 
@@ -24,7 +24,6 @@ class ExerciseModel {
       'description': description,
       'imageUrl': imageUrl,
       'type': type,
-      'difficulty': difficulty,
       'logicValues': logicValues,
     };
   }
@@ -36,7 +35,7 @@ class ExerciseModel {
       description: map['description'] as String,
       imageUrl: map['imageUrl'] as String,
       type: List<String>.from(map['type'] as List<dynamic>),
-      difficulty: map['difficulty'] as String,
+     // difficulty: map['difficulty'] as String,
       logicValues: Map<String, double>.from(map['logicValues'] as Map),
     );
   }
@@ -56,7 +55,6 @@ class ExerciseModel {
       description: description ?? this.description,
       imageUrl: imageUrl ?? this.imageUrl,
       type: type ?? this.type,
-      difficulty: difficulty ?? this.difficulty,
       logicValues: logicValues ?? this.logicValues,
     );
   }
