@@ -50,12 +50,10 @@ class DashboardScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 
-                Text('Mi Progreso', style: textTheme.titleLarge),
-                const SizedBox(height: 16),
+                
                 _buildProgressCard(context),
                 
                 const SizedBox(height: 16),
-                _buildBottomCards(context),
               ],
             ),
           ),
@@ -174,36 +172,7 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomCards(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildInfoCard(
-            context: context,
-            title: 'Librería de\nEjercicios',
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Icon(Icons.fitness_center, color: AppColors.textSecondary, size: 28),
-                Icon(Icons.directions_run, color: AppColors.textSecondary, size: 28),
-                Icon(Icons.self_improvement, color: AppColors.textSecondary, size: 28),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _buildInfoCard(
-            context: context,
-            title: 'Ajustes',
-            content: Center(
-              child: Icon(Icons.settings, size: 36, color: AppColors.textSecondary),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+
 
   Widget _buildInfoCard({required BuildContext context, required String title, required Widget content}) {
     return InkWell(
