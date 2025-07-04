@@ -1,7 +1,10 @@
+// lib/common/widgets/main_app_scaffold.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_app/features/dashboard/dashboard_screen.dart';
 import 'package:gym_app/features/exercises/exercise_list_screen.dart';
+import 'package:gym_app/features/routines/routines_screen.dart';
 import 'package:gym_app/features/progress/progress_screen.dart';
 import 'package:gym_app/features/settings/settings_screen.dart';
 import 'package:gym_app/features/auth/auth_viewmodel.dart';
@@ -84,6 +87,16 @@ class _MainAppScaffoldState extends State<MainAppScaffold> {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.list_alt_rounded),
+            title: const Text('Mis Rutinas'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const RoutinesScreen()),
+              );
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.fitness_center),
             title: const Text('Ejercicios'),
             onTap: () {
@@ -105,8 +118,8 @@ class _MainAppScaffoldState extends State<MainAppScaffold> {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Cerrar Sesión'),
+            leading: const Icon(Icons.logout, color: Colors.redAccent),
+            title: const Text('Cerrar Sesión', style: TextStyle(color: Colors.redAccent)),
             onTap: () {
               Navigator.pop(context);
               context.read<AuthViewModel>().signOut();
