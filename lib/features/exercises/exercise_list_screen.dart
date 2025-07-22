@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_app/features/exercises/exercise_viewmodel.dart';
 import 'package:gym_app/common/models/exercise_model.dart';
-import 'package:gym_app/features/exercises/exercise_detail_screen.dart'; // Importamos la pantalla de detalles
+import 'package:gym_app/features/exercises/exercise_detail_screen.dart';
+import 'package:gym_app/common/theme/app_theme.dart';
 
 class ExerciseListScreen extends StatelessWidget {
-  const ExerciseListScreen({super.key});
+  final bool isSelectionMode;
+
+  const ExerciseListScreen({super.key, this.isSelectionMode = false});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +18,7 @@ class ExerciseListScreen extends StatelessWidget {
       create: (_) => ExerciseViewModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Librería de Ejercicios'),
+          title: Text(isSelectionMode ? 'Seleccionar Ejercicio' : 'Librería de Ejercicios'),
         ),
         body: Consumer<ExerciseViewModel>(
           builder: (context, viewModel, child) {
@@ -24,11 +27,25 @@ class ExerciseListScreen extends StatelessWidget {
             }
 
             if (viewModel.errorMessage != null) {
-              return Center(child: Text('Error: ${viewModel.errorMessage}'));
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    'Error: ${viewModel.errorMessage}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                ),
+              );
             }
 
             if (viewModel.exercises.isEmpty) {
-              return const Center(child: Text('No se encontraron ejercicios.'));
+              return const Center(
+                child: Text(
+                  'No se encontraron ejercicios en la base de datos.',
+                  textAlign: TextAlign.center,
+                ),
+              );
             }
 
             return ListView.builder(
@@ -36,7 +53,10 @@ class ExerciseListScreen extends StatelessWidget {
               itemCount: viewModel.exercises.length,
               itemBuilder: (context, index) {
                 final exercise = viewModel.exercises[index];
-                return _ExerciseCard(exercise: exercise);
+                return _ExerciseCard(
+                  exercise: exercise,
+                  isSelectionMode: isSelectionMode,
+                );
               },
             );
           },
@@ -48,8 +68,9 @@ class ExerciseListScreen extends StatelessWidget {
 
 class _ExerciseCard extends StatelessWidget {
   final ExerciseModel exercise;
+  final bool isSelectionMode;
 
-  const _ExerciseCard({required this.exercise});
+  const _ExerciseCard({required this.exercise, required this.isSelectionMode});
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +84,15 @@ class _ExerciseCard extends StatelessWidget {
       shadowColor: Colors.black.withOpacity(0.1),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ExerciseDetailScreen(exercise: exercise),
-            ),
-          );
+          if (isSelectionMode) {
+            Navigator.of(context).pop(exercise);
+          } else {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ExerciseDetailScreen(exercise: exercise),
+              ),
+            );
+          }
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -78,7 +103,6 @@ class _ExerciseCard extends StatelessWidget {
                 height: 150,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                // Muestra un placeholder mientras carga
                 loadingBuilder: (context, child, loadingProgress) {
                   if (loadingProgress == null) return child;
                   return Container(
@@ -87,7 +111,6 @@ class _ExerciseCard extends StatelessWidget {
                     child: const Center(child: CircularProgressIndicator()),
                   );
                 },
-                // Muestra un icono si la imagen falla
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     height: 150,
@@ -98,12 +121,31 @@ class _ExerciseCard extends StatelessWidget {
               ),
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text(
-                exercise.name,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    exercise.name,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8.0,
+                    runSpacing: 4.0,
+                    children: exercise.type
+                        .map((type) => Chip(
+                              label: Text(type),
+                              backgroundColor: AppColors.primaryPurple.withOpacity(0.5),
+                              labelStyle: const TextStyle(color: AppColors.primaryPurpleDark, fontSize: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              side: BorderSide.none,
+                            ))
+                        .toList(),
+                  ),
+                ],
               ),
             ),
           ],
