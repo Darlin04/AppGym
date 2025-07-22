@@ -1,3 +1,5 @@
+// lib/features/routines/routine_viewmodel.dart
+
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:gym_app/common/models/routine_model.dart';
@@ -26,12 +28,17 @@ class RoutineViewModel extends ChangeNotifier {
   }
 
   Future<void> fetchUserRoutines() async {
-    if (_currentUser == null) return;
+    if (_currentUser == null) {
+      _errorMessage = "Usuario no autenticado.";
+      notifyListeners();
+      return;
+    }
     _isLoading = true;
     notifyListeners();
 
     try {
       _userRoutines = await _routineService.getRoutinesForUser(_currentUser!.uid);
+      _errorMessage = null;
     } catch (e) {
       _errorMessage = e.toString();
     } finally {
@@ -51,7 +58,7 @@ class RoutineViewModel extends ChangeNotifier {
       exerciseId: exercise.id,
       sets: sets,
       reps: reps,
-      restSecs: 60,
+      restSecs: 60, // Valor por defecto, se podría configurar en el diálogo
       order: _currentExercises.length,
     );
     _currentExercises.add(newRoutineExercise);
@@ -65,6 +72,7 @@ class RoutineViewModel extends ChangeNotifier {
     final item = _currentExercises.removeAt(oldIndex);
     _currentExercises.insert(newIndex, item);
     
+    // Actualiza el campo 'order' de cada ejercicio para mantener la consistencia
     for (int i = 0; i < _currentExercises.length; i++) {
       _currentExercises[i] = RoutineExercise(
         exerciseId: _currentExercises[i].exerciseId,
@@ -78,18 +86,30 @@ class RoutineViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveNewRoutine() async {
-    if (routineNameController.text.isEmpty || _currentExercises.isEmpty || _currentUser == null) {
-      _errorMessage = 'El nombre de la rutina y al menos un ejercicio son requeridos.';
+    if (routineNameController.text.trim().isEmpty) {
+      _errorMessage = 'El nombre de la rutina no puede estar vacío.';
       notifyListeners();
       return false;
     }
+    if (_currentExercises.isEmpty) {
+      _errorMessage = 'Debes añadir al menos un ejercicio a la rutina.';
+      notifyListeners();
+      return false;
+    }
+    if (_currentUser == null) {
+      _errorMessage = 'No se puede guardar la rutina. Usuario no autenticado.';
+      notifyListeners();
+      return false;
+    }
+
     _isLoading = true;
+    _errorMessage = null;
     notifyListeners();
 
     final newRoutine = RoutineModel(
-      id: const Uuid().v4(),
+      id: const Uuid().v4(), // Genera un ID único para la nueva rutina
       name: routineNameController.text.trim(),
-      description: 'Rutina personalizada',
+      description: 'Rutina personalizada', // Se podría añadir un campo para esto
       creatorUid: _currentUser!.uid,
       isPredefined: false,
       exercises: _currentExercises,
@@ -97,7 +117,7 @@ class RoutineViewModel extends ChangeNotifier {
 
     try {
       await _routineService.saveRoutine(newRoutine);
-      await fetchUserRoutines();
+      await fetchUserRoutines(); // Vuelve a cargar las rutinas para actualizar la lista
       return true;
     } catch (e) {
       _errorMessage = e.toString();
@@ -106,5 +126,11 @@ class RoutineViewModel extends ChangeNotifier {
       _isLoading = false;
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    routineNameController.dispose();
+    super.dispose();
   }
 }
