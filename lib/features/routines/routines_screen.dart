@@ -1,7 +1,11 @@
+// lib/features/routines/routines_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_app/features/routines/routine_viewmodel.dart';
 import 'package:gym_app/features/routines/create_routine_screen.dart';
+import 'package:gym_app/features/routines/routine_viewer_screen.dart';
+import 'package:gym_app/common/theme/app_theme.dart';
 
 class RoutinesScreen extends StatelessWidget {
   const RoutinesScreen({super.key});
@@ -51,7 +55,7 @@ class RoutinesScreen extends StatelessWidget {
   }
 
   Widget _buildRoutinesList(RoutineViewModel viewModel) {
-    if (viewModel.isLoading) {
+    if (viewModel.isLoading && viewModel.userRoutines.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
     if (viewModel.errorMessage != null) {
@@ -62,17 +66,26 @@ class RoutinesScreen extends StatelessWidget {
     }
 
     return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       itemCount: viewModel.userRoutines.length,
       itemBuilder: (context, index) {
         final routine = viewModel.userRoutines[index];
         return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          elevation: 2,
+          shadowColor: Colors.black.withOpacity(0.1),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           child: ListTile(
-            title: Text(routine.name),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            title: Text(routine.name, style: const TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text('${routine.exercises.length} ejercicios'),
-            trailing: const Icon(Icons.arrow_forward_ios),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textSecondary),
             onTap: () {
-              // Navegar a la pantalla de visualización de la rutina
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => RoutineViewerScreen(routine: routine),
+                ),
+              );
             },
           ),
         );
