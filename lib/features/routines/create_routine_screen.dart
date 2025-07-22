@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_app/features/routines/routine_viewmodel.dart';
 import 'package:gym_app/common/theme/app_theme.dart';
-import 'package:gym_app/common/models/routine_model.dart'; // Ruta del modelo de rutinas
+import 'package:gym_app/common/models/routine_model.dart';
+import 'package:gym_app/common/models/exercise_model.dart';
+import 'package:gym_app/features/exercises/exercise_list_screen.dart';
 
 class CreateRoutineScreen extends StatelessWidget {
   const CreateRoutineScreen({super.key});
@@ -58,14 +60,22 @@ class CreateRoutineScreen extends StatelessWidget {
                     exercise: exercise,
                   );
                 },
-                onReorder: (oldIndex, newIndex) {
-                  viewModel.reorderExercises(oldIndex, newIndex);
-                },
+                onReorder: viewModel.reorderExercises,
               ),
             ),
-            _AddExerciseButton(onTap: () {
-              // Navegar a ExerciseListScreen para seleccionar y devolver un ejercicio
-            }),
+            _AddExerciseButton(
+              onTap: () async {
+                final selectedExercise = await Navigator.of(context).push<ExerciseModel>(
+                  MaterialPageRoute(
+                    builder: (context) => const ExerciseListScreen(isSelectionMode: true),
+                  ),
+                );
+
+                if (selectedExercise != null && context.mounted) {
+                  _showSetsRepsDialog(context, selectedExercise);
+                }
+              },
+            ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
@@ -74,12 +84,72 @@ class CreateRoutineScreen extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Guardar Rutina'),
+              child: Consumer<RoutineViewModel>(
+                builder: (context, vm, child) {
+                  if (vm.isLoading) {
+                    return const SizedBox(
+                      height: 24,
+                      width: 24,
+                      child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                    );
+                  }
+                  return const Text('Guardar Rutina');
+                },
+              ),
             ),
             const SizedBox(height: 20),
           ],
         ),
       ),
+    );
+  }
+
+  void _showSetsRepsDialog(BuildContext context, ExerciseModel exercise) {
+    final setsController = TextEditingController();
+    final repsController = TextEditingController();
+    final viewModel = context.read<RoutineViewModel>();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text('Añadir ${exercise.name}'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: setsController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Series'),
+              ),
+              const SizedBox(height: 8),
+              TextField(
+                controller: repsController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Repeticiones'),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancelar'),
+              onPressed: () => Navigator.of(dialogContext).pop(),
+            ),
+            ElevatedButton(
+              child: const Text('Añadir'),
+              onPressed: () {
+                final sets = int.tryParse(setsController.text) ?? 0;
+                final reps = int.tryParse(repsController.text) ?? 0;
+
+                if (sets > 0 && reps > 0) {
+                  viewModel.addExerciseToRoutine(exercise, sets, reps);
+                  Navigator.of(dialogContext).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
