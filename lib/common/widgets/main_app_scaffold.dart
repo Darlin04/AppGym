@@ -1,5 +1,3 @@
-// lib/common/widgets/main_app_scaffold.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:gym_app/features/dashboard/dashboard_screen.dart';
@@ -7,6 +5,7 @@ import 'package:gym_app/features/exercises/exercise_list_screen.dart';
 import 'package:gym_app/features/routines/routines_screen.dart';
 import 'package:gym_app/features/progress/progress_screen.dart';
 import 'package:gym_app/features/settings/settings_screen.dart';
+import 'package:gym_app/features/planning/planning_viewer_screen.dart'; // Importamos la nueva pantalla
 import 'package:gym_app/features/auth/auth_viewmodel.dart';
 import 'package:gym_app/common/theme/app_theme.dart';
 
@@ -86,6 +85,18 @@ class _MainAppScaffoldState extends State<MainAppScaffold> {
               ),
             ),
           ),
+          // --- NUEVO ELEMENTO DEL MENÚ ---
+          ListTile(
+            leading: const Icon(Icons.event_note), // Icono para la planificación
+            title: const Text('Mi Planificación'),
+            onTap: () {
+              Navigator.pop(context); // Cierra el drawer
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const PlanningViewerScreen()),
+              );
+            },
+          ),
+          // --- FIN DEL NUEVO ELEMENTO ---
           ListTile(
             leading: const Icon(Icons.list_alt_rounded),
             title: const Text('Mis Rutinas'),
