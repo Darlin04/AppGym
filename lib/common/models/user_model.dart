@@ -8,6 +8,7 @@ class UserModel {
   final double? weightKg;
   final double? heightCm;
   final String? fitnessGoal;
+  final int? perceivedExertion; // RPE: Rating of Perceived Exertion
   final String? linkedGymCode;
   final Timestamp? createdAt;
 
@@ -19,6 +20,7 @@ class UserModel {
     this.weightKg,
     this.heightCm,
     this.fitnessGoal,
+    this.perceivedExertion,
     this.linkedGymCode,
     this.createdAt,
   });
@@ -32,6 +34,7 @@ class UserModel {
       'weightKg': weightKg,
       'heightCm': heightCm,
       'fitnessGoal': fitnessGoal,
+      'perceivedExertion': perceivedExertion,
       'linkedGymCode': linkedGymCode,
       'createdAt': createdAt ?? FieldValue.serverTimestamp(),
     };
@@ -46,6 +49,7 @@ class UserModel {
       weightKg: (map['weightKg'] as num?)?.toDouble(),
       heightCm: (map['heightCm'] as num?)?.toDouble(),
       fitnessGoal: map['fitnessGoal'] as String?,
+      perceivedExertion: map['perceivedExertion'] as int?,
       linkedGymCode: map['linkedGymCode'] as String?,
       createdAt: map['createdAt'] as Timestamp?,
     );
@@ -59,6 +63,7 @@ class UserModel {
     double? weightKg,
     double? heightCm,
     String? fitnessGoal,
+    int? perceivedExertion,
     String? linkedGymCode,
     Timestamp? createdAt,
   }) {
@@ -70,6 +75,7 @@ class UserModel {
       weightKg: weightKg ?? this.weightKg,
       heightCm: heightCm ?? this.heightCm,
       fitnessGoal: fitnessGoal ?? this.fitnessGoal,
+      perceivedExertion: perceivedExertion ?? this.perceivedExertion,
       linkedGymCode: linkedGymCode ?? this.linkedGymCode,
       createdAt: createdAt ?? this.createdAt,
     );
