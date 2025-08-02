@@ -18,6 +18,7 @@ dependencies:
   fl_chart: ^1.0.0
   iconsax: ^0.0.8
   uuid: ^4.5.1
+  intl: ^0.20.2
 
 
 dev_dependencies:
