@@ -1,10 +1,9 @@
-// lib/features/dashboard/dashboard_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:gym_app/common/theme/app_theme.dart';
-import 'package:gym_app/features/onboarding/questionnaire_screen.dart';
+// Importamos la nueva pantalla de creación de planes
+import 'package:gym_app/features/planning/create_plan_screen.dart';
 import 'package:gym_app/features/auth/auth_viewmodel.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -14,7 +13,8 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     final authViewModel = context.watch<AuthViewModel>();
-    final userName = authViewModel.user?.displayName ?? 'Bienvenido';
+    // He simplificado el nombre de usuario para evitar posibles nulos.
+    final userName = authViewModel.user?.displayName ?? authViewModel.user?.email?.split('@').first ?? 'Bienvenido';
 
     return Scaffold(
       body: SafeArea(
@@ -32,12 +32,13 @@ class DashboardScreen extends StatelessWidget {
                   context: context,
                   icon: Iconsax.edit,
                   title: 'Crear Plan de Entrenamiento',
-                  subtitle: 'Personaliza tu rutina',
+                  subtitle: 'Construye tu plan semanal', // Subtítulo actualizado
                   color: AppColors.primaryPurple,
                   iconColor: AppColors.primaryPurpleDark,
                   onTap: () {
+                    // Acción actualizada: Navega a la nueva pantalla de creación.
                     Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const QuestionnaireScreen()),
+                      MaterialPageRoute(builder: (context) => const CreatePlanScreen()),
                     );
                   },
                 ),
@@ -50,11 +51,11 @@ class DashboardScreen extends StatelessWidget {
                   subtitle: 'Una opción rápida para empezar',
                   color: AppColors.secondaryGreen,
                   iconColor: Colors.green.shade800,
-                  onTap: () {},
+                  onTap: () {
+                    // Lógica para rutina aleatoria (sin cambios)
+                  },
                 ),
                 const SizedBox(height: 30),
-                
-                
                 
                 _buildProgressCard(context),
               ],
@@ -64,6 +65,9 @@ class DashboardScreen extends StatelessWidget {
       ),
     );
   }
+
+  // El resto del código de DashboardScreen (_buildActionCard, _buildProgressCard, etc.)
+  // permanece exactamente igual que antes, así que lo omito por brevedad.
 
   Widget _buildActionCard({
     required BuildContext context,
