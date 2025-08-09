@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gym_app/features/planning/planning_viewmodel.dart';
 import 'package:gym_app/common/models/planification_model.dart';
-import 'package:gym_app/features/onboarding/questionnaire_screen.dart';
+import 'package:gym_app/features/planning/create_plan_screen.dart'; 
 import 'package:gym_app/common/theme/app_theme.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -13,7 +13,6 @@ class PlanningViewerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Usamos ChangeNotifierProvider para crear y proveer el ViewModel a los widgets hijos.
     return ChangeNotifierProvider(
       create: (_) => PlanningViewModel(),
       child: Scaffold(
@@ -22,12 +21,10 @@ class PlanningViewerScreen extends StatelessWidget {
         ),
         body: Consumer<PlanningViewModel>(
           builder: (context, viewModel, child) {
-            // Estado de carga inicial
             if (viewModel.isLoading && viewModel.activePlanification == null) {
               return const Center(child: CircularProgressIndicator());
             }
 
-            // Estado de error
             if (viewModel.errorMessage != null) {
               return Center(
                 child: Padding(
@@ -41,12 +38,10 @@ class PlanningViewerScreen extends StatelessWidget {
               );
             }
 
-            // Estado con planificación activa
             if (viewModel.activePlanification != null) {
               return _PlanDetailsView(plan: viewModel.activePlanification!);
             }
 
-            // Estado vacío (sin planificación activa)
             return const _EmptyStateView();
           },
         ),
@@ -55,7 +50,6 @@ class PlanningViewerScreen extends StatelessWidget {
   }
 }
 
-// Widget para mostrar cuando no hay un plan activo.
 class _EmptyStateView extends StatelessWidget {
   const _EmptyStateView();
 
@@ -77,7 +71,7 @@ class _EmptyStateView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Crea un nuevo plan de entrenamiento personalizado para empezar a registrar tu progreso.',
+              'Crea un nuevo plan de entrenamiento para empezar a registrar tu progreso.',
               style: Theme.of(context).textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
@@ -86,8 +80,9 @@ class _EmptyStateView extends StatelessWidget {
               icon: const Icon(Icons.add),
               label: const Text('Crear Plan de Entrenamiento'),
               onPressed: () {
+                // Navegamos a la pantalla correcta
                 Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const QuestionnaireScreen()),
+                  MaterialPageRoute(builder: (context) => const CreatePlanScreen()),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -101,13 +96,13 @@ class _EmptyStateView extends StatelessWidget {
   }
 }
 
-// Widget para mostrar los detalles de la planificación activa.
 class _PlanDetailsView extends StatelessWidget {
   final PlanificationModel plan;
   const _PlanDetailsView({required this.plan});
 
   // Helper para formatear Timestamp a una fecha legible.
   String _formatDate(Timestamp timestamp) {
+    // AHORA ESTO FUNCIONARÁ PORQUE 'intl' ESTÁ IMPORTADO
     return DateFormat('dd/MM/yyyy', 'es_ES').format(timestamp.toDate());
   }
 
@@ -140,7 +135,6 @@ class _PlanDetailsView extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 12),
-          // Construye la lista de rutinas asignadas a cada día.
           if (plan.routineAssignments.isEmpty)
             const Text('No hay rutinas asignadas en esta planificación.')
           else
@@ -199,7 +193,6 @@ class _PlanDetailsView extends StatelessWidget {
   }
 }
 
-// Widget para mostrar una rutina asignada a un día.
 class _RoutineDayTile extends StatelessWidget {
   final String dayName;
   final String routineId;
@@ -213,12 +206,10 @@ class _RoutineDayTile extends StatelessWidget {
       child: ListTile(
         leading: const Icon(Icons.fitness_center, color: AppColors.primaryPurpleDark),
         title: Text(dayName, style: const TextStyle(fontWeight: FontWeight.bold)),
-        // NOTA: Mostramos el ID por ahora. En el futuro, se podría obtener el nombre de la rutina.
         subtitle: Text('ID de Rutina: $routineId', style: const TextStyle(color: AppColors.textSecondary)),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),
         onTap: () {
           // TODO: Navegar al visor de la rutina específica (RoutineViewerScreen).
-          // Se necesitaría obtener el RoutineModel completo a partir del routineId.
         },
       ),
     );
