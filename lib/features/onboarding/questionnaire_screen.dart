@@ -18,7 +18,6 @@ class QuestionnaireScreen extends StatelessWidget {
   }
 }
 
-// ---- EL RESTO DEL ARCHIVO PERMANECE IGUAL ----
 
 class _QuestionnaireView extends StatelessWidget {
   final bool isAddingGoalToPlan;
